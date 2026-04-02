@@ -6,10 +6,10 @@ const DB_NAME = process.env.DB_NAME || 'smart_checkout';
 // ─── MySQL Connection Pool ───
 const poolConfig = {
   host: process.env.DB_HOST || 'mysql.railway.internal',
-  port: parseInt(process.env.DB_PORT) || 3306,
-  user: process.env.DB_USER || 'root',
-  password: process.env.DB_PASSWORD || 'gOaaYxosBEVWvTldEtHfvAGNFDOKhaSG',
-  database: railway,
+  port: parseInt(process.env.DB_PORT) || 11571,
+  user: process.env.DB_USER || 'avnadmin',
+  password: process.env.DB_PASSWORD || 'AVNS_W4sBfwBMAJ_TFkuVbih',
+  database: defaultdb,
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
