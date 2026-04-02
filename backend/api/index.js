@@ -2,27 +2,27 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 
-const { initDatabase } = require('../db');
-
 const app = express();
 
 // Middleware
 app.use(cors({
   origin: process.env.FRONTEND_URL || '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true
 }));
 app.use(express.json());
 
-// Initialize DB on first request (cold start)
+// Initialize DB once per cold start
 let dbReady = false;
 app.use(async (req, res, next) => {
   if (!dbReady) {
     try {
+      const { initDatabase } = require('../db');
       await initDatabase();
       dbReady = true;
-      console.log('✅ Database ready');
     } catch (err) {
-      console.error('⚠️ DB init error:', err.message);
+      console.error('DB init error:', err.message);
+      // Don't block - let routes handle their own DB errors
     }
   }
   next();
@@ -36,14 +36,26 @@ app.use('/api/orders', require('../routes/orders'));
 app.use('/api/offers', require('../routes/offers'));
 
 // Health check
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', database: 'mysql', timestamp: new Date().toISOString() });
+app.get('/api/health', async (req, res) => {
+  try {
+    const { pool } = require('../db');
+    await pool.query('SELECT 1');
+    res.json({ status: 'ok', database: 'connected', timestamp: new Date().toISOString() });
+  } catch (err) {
+    res.json({ status: 'ok', database: 'disconnected', error: err.message, timestamp: new Date().toISOString() });
+  }
 });
 
 // 404
 app.use((req, res) => {
-  res.status(404).json({ error: 'Route not found.' });
+  res.status(404).json({ error: 'Route not found.', path: req.url });
 });
 
-// Export for Vercel serverless
+// Global error handler
+app.use((err, req, res, next) => {
+  console.error('Server error:', err);
+  res.status(500).json({ error: 'Internal server error.' });
+});
+
+// Export for Vercel
 module.exports = app;
