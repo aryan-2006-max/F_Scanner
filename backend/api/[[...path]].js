@@ -4,12 +4,18 @@ require('dotenv').config();
 
 const app = express();
 
-// Middleware
-app.use(cors({
+// CORS Middleware - must be before all routes
+const corsOptions = {
   origin: process.env.FRONTEND_URL || '*',
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  credentials: true
-}));
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+};
+app.use(cors(corsOptions));
+
+// Explicitly handle preflight OPTIONS requests for all routes
+app.options('*', cors(corsOptions));
+
 app.use(express.json());
 
 // Initialize DB once per cold start
