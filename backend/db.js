@@ -17,7 +17,7 @@ const poolConfig = {
 };
 
 // Add SSL for remote databases (Railway, PlanetScale, etc.)
-if (process.env.DB_HOST && process.env.DB_HOST !== 'localhost' && process.env.DB_HOST !== '127.0.0.1') {
+if (process.env.DB_HOST && process.env.DB_HOST !== 'mysql-10bb63a1-stockportfolio23.j.aivencloud.com' && process.env.DB_HOST !== '127.0.0.1') {
   poolConfig.ssl = { rejectUnauthorized: false };
   console.log('🔒 SSL enabled for remote MySQL');
 }
