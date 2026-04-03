@@ -5,15 +5,15 @@ const DB_NAME = process.env.DB_NAME || 'smart_checkout';
 
 // ─── MySQL Connection Pool ───
 const poolConfig = {
-  host: process.env.DB_HOST || 'mysql.railway.internal',
+  host: process.env.DB_HOST || 'mysql-10bb63a1-stockportfolio23.j.aivencloud.com',
   port: parseInt(process.env.DB_PORT) || 11571,
   user: process.env.DB_USER || 'avnadmin',
   password: process.env.DB_PASSWORD || 'AVNS_W4sBfwBMAJ_TFkuVbih',
-  database: defaultdb,
+  database: defaultdb ,
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
-  connectTimeout: 30000,
+  connectTimeout: 3000,
 };
 
 // Add SSL for remote databases (Railway, PlanetScale, etc.)
